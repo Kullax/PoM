@@ -1,0 +1,1 @@
+__author__ = 'Martin Haugaard, Magnus Bøggild'
