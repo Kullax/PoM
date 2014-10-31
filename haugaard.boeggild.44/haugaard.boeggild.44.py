@@ -8,7 +8,6 @@ from csvImageRead import csvImageRead
 
 __author__ = "Martin Simon Haugaard, Magnus Egede Bøggild"
 
-
 def gradient(V):
     """
     Calculates the gradient from a given image
