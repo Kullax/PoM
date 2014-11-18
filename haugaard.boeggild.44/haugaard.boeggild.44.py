@@ -16,25 +16,21 @@ def gradient(V):
     :return:
     """
     N = len(V)
-    imagelistdx = [[0 for _ in range(N)] for _ in range(N)]
-    imagelistdy = [[0 for _ in range(N)] for _ in range(N)]
-
+    imagelistdx = [[0 for _ in xrange(N)] for _ in xrange(N)]
+    imagelistdy = [[0 for _ in xrange(N)] for _ in xrange(N)]
     for i in range(N):
         for j in range(N):
             if j < (N-1):
                 (imagelistdx[i])[j] = (V[i])[j+1] - (V[i])[j]
             else:
                 (imagelistdx[i])[j] = 0.0
-
     for i in range(N):
         for j in range(N):
             if i < (N-1):
-                (imagelistdy[i])[j] = (V[i+1])[j] - (V[i])[j]
+               (imagelistdy[i])[j] = (V[i+1])[j] - (V[i])[j]
             else:
-                (imagelistdy[i])[j] = 0.0
-
-    return imagelistdx, imagelistdy
-
+               (imagelistdy[i])[j] = 0.0
+    return imagelistdy, imagelistdx
 
 def gradNorm(V1, V2):
     """
@@ -63,16 +59,16 @@ def divergence(V1, V2):
 
     for i in range(N):
         for j in range(N):
-            if i > 0 and i < N-1:
+            if i > 0 and i < N-2:
                 (div[i])[j] += (V1[i])[j]-(V1[i-1])[j]
             elif i == 0:
                 (div[i])[j] += (V1[i])[j]
-            elif i == N-1:
+            else:
                 (div[i])[j] += -(V1[i-1])[j]
 
     for i in range(N):
         for j in range(N):
-            if j > 0 and j < N-1:
+            if j > 0 and j < N-2:
                 (div[i])[j] += (V2[i])[j]-(V2[i])[j-1]
             elif j == 0:
                 (div[i])[j] += (V2[i])[j]
