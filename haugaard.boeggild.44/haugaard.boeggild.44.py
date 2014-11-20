@@ -59,16 +59,16 @@ def divergence(V1, V2):
 
     for i in range(N):
         for j in range(N):
-            if i > 0 and i < N-2:
+            if i > 0 and i < N-1:
                 (div[i])[j] += (V1[i])[j]-(V1[i-1])[j]
             elif i == 0:
                 (div[i])[j] += (V1[i])[j]
             else:
                 (div[i])[j] += -(V1[i-1])[j]
-
-    for i in range(N):
-        for j in range(N):
-            if j > 0 and j < N-2:
+#Mossa: Fjern disse
+#    for i in range(N):
+#        for j in range(N):
+            if j > 0 and j < N-1:
                 (div[i])[j] += (V2[i])[j]-(V2[i])[j-1]
             elif j == 0:
                 (div[i])[j] += (V2[i])[j]
@@ -78,7 +78,7 @@ def divergence(V1, V2):
 
 if __name__ == "__main__":
 # a)
-    imageList = csvImageRead("haugaard.boeggild.44/Cameraman.csv")
+    imageList = csvImageRead("Cameraman.csv")
     width = len(imageList)
     height = len(imageList[0])
 
@@ -120,7 +120,7 @@ if __name__ == "__main__":
 # e)
     # The following section is split into several lesser parts:
 # 1)
-    y = csvImageRead("haugaard.boeggild.44/CameramanNoisy.csv")
+    y = csvImageRead("CameramanNoisy.csv")
 
 #2)
     my_tau = 0.248
@@ -154,8 +154,9 @@ if __name__ == "__main__":
 # Then normalise w1, w2 by diving their values by "1 + dWnorm*tau"
         for i in range(N):
             for j in range(N):
-                (w1[i])[j] -= my_tau*(dWnorm[i])[j]
-                (w2[i])[j] -= my_tau*(dWnorm[i])[j]
+#Mossa: Det her er hvad der er i vejen
+                (w1[i])[j] -= my_tau*(dVx[i])[j]
+                (w2[i])[j] -= my_tau*(dVy[i])[j]
         # Normalizing
         for i in range(N):
             for j in range(N):
@@ -170,8 +171,9 @@ if __name__ == "__main__":
         value = 0
         for i in range(N):
             for j in range(N):
-                value += ((ylambda[i])[j] - (divW[i])[j])
-        value = (value**2.0)/2.0
+#Mossa: Her var der også en fejl...
+                value += ((ylambda[i])[j] - (divW[i])[j])**2
+        value = (value)/2.0
         iterations.append(value)
         # Visual pointer as the end of each iteration.
         print ".",
