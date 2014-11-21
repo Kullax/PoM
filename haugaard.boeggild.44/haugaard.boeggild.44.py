@@ -16,21 +16,21 @@ def gradient(V):
     :return:
     """
     N = len(V)
-    imagelistdx = [[0 for _ in xrange(N)] for _ in xrange(N)]
-    imagelistdy = [[0 for _ in xrange(N)] for _ in xrange(N)]
+    imagelist0 = [[0 for _ in xrange(N)] for _ in xrange(N)]
+    imagelist1 = [[0 for _ in xrange(N)] for _ in xrange(N)]
     for i in range(N):
         for j in range(N):
             if j < (N-1):
-                (imagelistdx[i])[j] = (V[i])[j+1] - (V[i])[j]
+                (imagelist0[i])[j] = (V[i])[j+1] - (V[i])[j]
             else:
-                (imagelistdx[i])[j] = 0.0
+                (imagelist0[i])[j] = 0.0
     for i in range(N):
         for j in range(N):
             if i < (N-1):
-               (imagelistdy[i])[j] = (V[i+1])[j] - (V[i])[j]
+               (imagelist1[i])[j] = (V[i+1])[j] - (V[i])[j]
             else:
-               (imagelistdy[i])[j] = 0.0
-    return imagelistdy, imagelistdx
+               (imagelist1[i])[j] = 0.0
+    return imagelist1, imagelist0
 
 def gradNorm(V1, V2):
     """
@@ -65,9 +65,6 @@ def divergence(V1, V2):
                 (div[i])[j] += (V1[i])[j]
             else:
                 (div[i])[j] += -(V1[i-1])[j]
-#Mossa: Fjern disse
-#    for i in range(N):
-#        for j in range(N):
             if j > 0 and j < N-1:
                 (div[i])[j] += (V2[i])[j]-(V2[i])[j-1]
             elif j == 0:
@@ -79,6 +76,7 @@ def divergence(V1, V2):
 if __name__ == "__main__":
 # a)
     imageList = csvImageRead("Cameraman.csv")
+    # imageList = csvImageRead("haugaard.boeggild.44/Cameraman.csv")
     width = len(imageList)
     height = len(imageList[0])
 
@@ -94,7 +92,7 @@ if __name__ == "__main__":
     plt.imshow(imageList, cmap="Greys_r")
     plt.show()
 # b)
-    img_x, img_y = gradient(imageList)
+    img_y, img_x = gradient(imageList)
     plt.figure("ImageListDx")
     plt.imshow(img_x, cmap="Greys_r")
     plt.show()
@@ -121,6 +119,7 @@ if __name__ == "__main__":
     # The following section is split into several lesser parts:
 # 1)
     y = csvImageRead("CameramanNoisy.csv")
+    # y = csvImageRead("haugaard.boeggild.44/CameramanNoisy.csv")
 
 #2)
     my_tau = 0.248
@@ -154,7 +153,6 @@ if __name__ == "__main__":
 # Then normalise w1, w2 by diving their values by "1 + dWnorm*tau"
         for i in range(N):
             for j in range(N):
-#Mossa: Det her er hvad der er i vejen
                 (w1[i])[j] -= my_tau*(dVx[i])[j]
                 (w2[i])[j] -= my_tau*(dVy[i])[j]
         # Normalizing
@@ -162,16 +160,12 @@ if __name__ == "__main__":
             for j in range(N):
                 (w1[i])[j] /= (1.0+(dWnorm[i])[j]*my_tau)
                 (w2[i])[j] /= (1.0+(dWnorm[i])[j]*my_tau)
-# We have a suspicion that the code above does not work properly, this is because it's the critical iteration part,
-# but as shown later, it seems like each iteration doesn't improve much, if any on the noise of the image.
-
 # 5.4 - update divW, using w1 and w2
         divW = divergence(w1, w2)
 # 5.5 - calculate the value of the image for each iteration, and save as a list
         value = 0
         for i in range(N):
             for j in range(N):
-#Mossa: Her var der også en fejl...
                 value += ((ylambda[i])[j] - (divW[i])[j])**2
         value = (value)/2.0
         iterations.append(value)
@@ -196,12 +190,11 @@ if __name__ == "__main__":
 #f)
     # see e) 5.5 in the code above for implementation,
     # Does it behave as expected?!
-    # Sadly, no,
-    # We expected the image to improve for each iteration, meaning that the value calculated in step e) 5.5 should start
-    # off high, and then become lower for each new iteration, until an "optimal" noise reduced image is reached,
-    # where each new iteration, neither improves on, or adds more noise to the image.
-    # This does not happen in our code however, and instead we see the value more or less static, with each new
-    # iteration either adding or removing some noise, but the overall impression is that our noise reduction is broken.
+    # Yes, yes it does!
+    # We expected the image to improve for each iteration, removing noise in each iteration,
+    # looking at the curve, in the lower plot, it is clear that the first few iterations causes
+    # the calculated value to drop, illustrating the step by step improvements bringing
+    # our image closer to an "optimal" noise reduced image.
 
 #g)
     # What effect does the size of lambda have on the algorithm in e)?
@@ -210,11 +203,3 @@ if __name__ == "__main__":
     # high for proper noise detection, the difference between the values will be relatively low compared to the values
     # themselves. If lambda is set too low however, every little change in value between neighboring pixels will seem
     # huge, and most of the image will be determined as noise, causing more harm than good.
-
-    """
-    As mentioned above, we did not manage to achieve any actual noise reduction in our image.
-    This can be either due to faulty implementation, causing coordinates to miss, never actually fixing noise where
-    needed, or it could be due to mistakes done in the iterations. Either way, we feel like we're very close to having
-    a functional code. As all the helper functions declared before main seem to work properly, and we've implemented the
-    iteration as best we could.
-    """
