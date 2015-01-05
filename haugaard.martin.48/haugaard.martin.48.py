@@ -1,7 +1,6 @@
 from __future__ import division
 #-*- coding: UTF-8 -*-
 __author__ = 'Martin Simon Haugaard'
-import math
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import animation
@@ -12,8 +11,8 @@ Simpel implementation af en bølge på et stadium, i form af en en-dimensionel-g
 # Globale variable, bør ikke ændres
 c = 1
 l = 250
-k = 1
-h = 1
+k = 0.9
+h = 0.9
 
 
 def cal_u(x, t):
@@ -25,15 +24,15 @@ def cal_u(x, t):
     :return: fire variable der bruges til udregning af næste bølge-værdi i x
     """
     if t == 0:
-        u1 = math.exp(-((x-7.0)**2.0) / 4.0)
-        u2 = math.exp(-((x-8.0)**2.0) / 4.0)
-        u3 = math.exp(-((x-9.0)**2.0) / 4.0)
-        u5 = math.exp(-((x-8.0)**2.0) / 4.0)
+        u1 = np.exp(-((x-7.0)**2.0) / 4.0)
+        u2 = np.exp(-((x-8.0)**2.0) / 4.0)
+        u3 = np.exp(-((x-9.0)**2.0) / 4.0)
+        u5 = np.exp(-((x-8.0)**2.0) / 4.0)
     elif t == k:
-        u1 = math.exp(-((x-7.0-c*k)**2.0) / 4.0)
-        u2 = math.exp(-((x-8.0-c*k)**2.0) / 4.0)
-        u3 = math.exp(-((x-9.0-c*k)**2.0) / 4.0)
-        u5 = math.exp(-((x-8.0-c*k)**2.0) / 4.0)
+        u1 = np.exp(-((x-7.0-c*k)**2.0) / 4.0)
+        u2 = np.exp(-((x-8.0-c*k)**2.0) / 4.0)
+        u3 = np.exp(-((x-9.0-c*k)**2.0) / 4.0)
+        u5 = np.exp(-((x-8.0-c*k)**2.0) / 4.0)
     else:
         # hvis vi når en kant, skal vi wrappe rundt til den modsatte side af stadium
         if x == l-1:
@@ -66,6 +65,7 @@ if __name__ == "__main__":
     # denne vil stige i takt med at programmet kører, den inderste liste er alle x-koordinaterne for den pågældende
     # iteration.
     global iterations
+
     iterations = [[0 for _ in xrange(l)] for _ in xrange(1)]
 
     plt.figure("Stadium - Iteration 0")
@@ -88,18 +88,17 @@ if __name__ == "__main__":
         for q in xrange(l):
             iterations[1+i][q] = make_calculation(q, i)
 
-    plt.figure("Stadium - Iteration 51 - Bølgen har flyttet sig!")
-    print(math.floor(l/2))
-    plt.plot(xrange(l), iterations[int(math.floor(l/2))])
+    plt.figure("Stadium - Iteration 51 - Waven har flyttet sig!")
+    plt.plot(xrange(l), iterations[int(np.floor(l/2))])
     plt.show()
 
-    plt.figure("Stadium - Iteration 237 - Bølgen har flyttet sig endnu mere!")
+    plt.figure("Stadium - Iteration 237 - Waven har flyttet sig endnu mere!")
     plt.plot(xrange(l), iterations[237])
     plt.show()
 
     # En bølge er ikke en bølge ved mindre den bevæger sig.
     # Derfor: Animation!
-    fig = plt.figure("Animation af bølge bevægelse")
+    fig = plt.figure("Animation af Wave Moment")
     ax = plt.axes(xlim=(0, l), ylim=(-20, 20))
     line, = ax.plot([], [], lw=2)
 
