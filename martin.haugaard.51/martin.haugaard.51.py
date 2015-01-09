@@ -121,7 +121,7 @@ class Canister:
                 p1m = p1.__add__(vp.scale(vp.len()))
                 v2 = pc.vec(p1m).scale(p.V.len())
                 p.V = v2
-                p.P = pc + p.V.scale(1-u)
+                p.P = pc + p.V.scale(p.V.len()*(1-u))
             else:
                 p.P = p.step(dt)
 
