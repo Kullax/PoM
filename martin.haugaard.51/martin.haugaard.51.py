@@ -135,8 +135,8 @@ class Canister:
         for particle in self.listOfParticles:
             vsum += particle.V.len()
         A = np.pi*self.R**2
-        P = N * m * vsum**2 / 2 * A
-        return P
+        F = 0.5 * A * (2*self.R) * m * N * vsum**2
+        return F
 
     def setTemp(self, T):
         """
@@ -192,6 +192,8 @@ def main():
     # Define the canister, using default setting
     global can
     can = Canister()
+    show_animation()
+
     # Change the temperature to 300 K
     can.setTemp(300)
     show_animation()
