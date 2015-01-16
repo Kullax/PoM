@@ -4,7 +4,6 @@ __author__ = 'Martin Simon Haugaard'
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import animation
-import itertools # xrange breaks due to overflow, this doesnt
 """
 Simpel implementation af en bølge på et stadium, i form af en en-dimensionel-graf
 """
@@ -12,18 +11,8 @@ Simpel implementation af en bølge på et stadium, i form af en en-dimensionel-g
 # Globale variable, bør ikke ændres
 c = 1
 l = 250             # length of stadium
-k = 0.5               # how fast people are to react
-h = 1             # how close people are stashed next to each other
-fans = int(1/h*l)    # a fully packed stadium, of length l, with h spaces between each seat, has this many fans
-
-
-def xi(i):
-    return i*h
-
-
-def jk(t):
-    return t*k
-
+k = 0.5              # how fast people are to react
+h = 0.5        # how close people are stashed next to each other
 
 def cal_u(i, t):
     """
@@ -34,16 +23,18 @@ def cal_u(i, t):
     :return: fire variable der bruges til udregning af næste bølge-værdi i x
     """
     if t == 0:
-        u1 = np.exp(-((xi(i)-8.0)**2.0) / 4.0)
-        u2 = np.exp(-((xi(i)-8.0)**2.0) / 4.0)
-        u3 = np.exp(-((xi(i)-8.0)**2.0) / 4.0)
-        u5 = np.exp(-((xi(i)-8.0)**2.0) / 4.0)
+        u1 = np.exp(-((i-8.0)**2.0) / 4.0)
+        u2 = np.exp(-((i-8.0)**2.0) / 4.0)
+        u3 = np.exp(-((i-8.0)**2.0) / 4.0)
+        u5 = np.exp(-((i-8.0)**2.0) / 4.0)
     elif t == k:
-        u1 = np.exp(-((xi(i)-8.0-c*k)**2.0) / 4.0)
-        u2 = np.exp(-((xi(i)-8.0-c*k)**2.0) / 4.0)
-        u3 = np.exp(-((xi(i)-8.0-c*k)**2.0) / 4.0)
-        u5 = np.exp(-((xi(i)-8.0-c*k)**2.0) / 4.0)
+        u1 = np.exp(-((i-8.0-c*k)**2.0) / 4.0)
+        u2 = np.exp(-((i-8.0-c*k)**2.0) / 4.0)
+        u3 = np.exp(-((i-8.0-c*k)**2.0) / 4.0)
+        u5 = np.exp(-((i-8.0-c*k)**2.0) / 4.0)
     else:
+        i = i / h
+        t = t / k
         # hvis vi når en kant, skal vi wrappe rundt til den modsatte side af stadium
         try:
             u1 = iterations[t][i+1]
@@ -51,7 +42,7 @@ def cal_u(i, t):
             u1 = iterations[t][0]
         u2 = iterations[t][i]
         if i == 0:
-            u3 = iterations[t][fans-1]
+            u3 = iterations[t][len(iterations[0])-1]
         else:
             u3 = iterations[t][i-1]
         u5 = iterations[t-1][i]
@@ -75,63 +66,55 @@ if __name__ == "__main__":
     # denne vil stige i takt med at programmet kører, den inderste liste er alle x-koordinaterne for den pågældende
     # iteration.
     global iterations
-    # jeg laver et sæde for hver fan
-    iterations = np.array([[0 for _ in xrange(fans)]])
+    iterations = np.array([[0 for _ in np.arange(0, l, h)] for _ in np.arange(0, 400, k)])
 
-    plt.figure("Stadium - Iteration 0")
-    plt.plot(xrange(fans), iterations[0])
+    plt.figure("Stadium - Iteration -1 - ikke begyndt wave")
+    plt.plot(np.arange(0, l, h), iterations[0])
     plt.show()
 
-    new_line = np.array([[0 for _ in xrange(fans)]])
-    iterations = np.vstack((iterations, new_line))
-    # Tilføjer endnu en interation til listen af iterationer
-    for q in xrange(fans):
-        iterations[1][q] = make_calculation(q, 0)
+    for t in xrange(500):
+        for x in np.arange(0, l, h):
+            iterations[t+1][x/h] = make_calculation(x, t*k)
 
     plt.figure("Stadium - Iteration 1 - Fan er oppe!")
-    plt.plot(xrange(fans), iterations[1])
+    plt.plot(np.arange(0, l, h), iterations[1])
     plt.show()
 
-    # Tilføjer endnu 300 iterationer, dette burde være nok til at nå hele omgangen rundt om stadium
-    new_line = np.array([[0 for _ in xrange(fans)] for _ in xrange(301)])
-    iterations = np.vstack((iterations, new_line))
-    for i in range(300):
-        for q in range(fans):
-            iterations[1+i][q] = make_calculation(q, i)
-
-    plt.figure("Stadium - Iteration 51 - Waven har flyttet sig!")
-    plt.plot(xrange(fans), iterations[51])
+    plt.figure("Stadium - Iteration 2 - Waven har flyttet sig!")
+    plt.plot(np.arange(0, l, h), iterations[51])
     plt.show()
 
-    plt.figure("Stadium - Iteration 237 - Waven har flyttet sig endnu mere!")
-    plt.plot(xrange(fans), iterations[237])
+    plt.figure("Stadium - Iteration 233 - Waven har flyttet sig endnu mere!")
+    plt.plot(np.arange(0, l, h), iterations[233])
+    plt.show()
+
+    plt.figure("Stadium - Iteration 482 - Waven er snart ved kanten")
+    plt.plot(np.arange(0, l, h), iterations[482])
     plt.show()
 
     # En bølge er ikke en bølge ved mindre den bevæger sig.
     # Derfor: Animation!
     fig = plt.figure("Animation af Wave Moment")
-    ax = plt.axes(xlim=(0, fans), ylim=(-20, 20))
+    ax = plt.axes(xlim=(0, len(iterations[0])), ylim=(-20, 20))
     line, = ax.plot([], [], lw=2)
 
     def init():
         global iterations
-        iterations = np.array([[0 for _ in xrange(fans)]])
+        iterations = np.array([[0 for _ in np.arange(0, l, h)] for _ in np.arange(0, 400, k)])
         line.set_data([], [])
         return line,
 
     def animate(i):
         global iterations
-        new_line = np.array([[0 for _ in xrange(fans)]])
-        iterations = np.vstack((iterations, new_line))
-        for q in xrange(fans):
-            iterations[i+1][q] = make_calculation(q, i)
-        x = np.linspace(0, fans, fans)
+        for q in np.arange(0, l, h):
+            iterations[i+1][q/h] = make_calculation(q, i*k)
+        x = np.linspace(0, len(iterations[0]), len(iterations[0]))
         y = iterations[i]
         line.set_data(x, y)
-        if round(y[fans-1], 2) != 0:
-            print "Doing the wave on the edge!\n Iteration: ", i
+        if (iterations[i][len(iterations[0])-1] != 0):
+            print "Wave reached edge, iteration", i
         return line,
 
     anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                   frames=l, interval=100, blit=True)
+                                   frames=len(iterations[0])+15, interval=100, blit=True)
     plt.show()

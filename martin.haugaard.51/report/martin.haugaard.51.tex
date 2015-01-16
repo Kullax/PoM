@@ -1,0 +1,143 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+\usepackage{listings}
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+\usepackage{enumerate}
+
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{PoM Week 14}
+\author{Martin Simon Haugaard\\cdl966}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed
+
+\begin{document}
+\maketitle
+
+
+\section*{14g1}
+\subsection*{a}
+
+Mit design er ganske simpelt. Beholderen er en cirkel, i et koordinat system, defineret ved et centerpunk $C$,
+samt en radius $R$.\\
+Beholderen er en klasse for sig selv, kaldet $Canister$, og indeholder ydremere en liste der skal indeholde partikel objekter.
+
+En Partikel er defineret ved endnu en klasse, der indeholder to vektorer: en positionvektor, $P$, samt en retningvektor, $V$.\\
+Ydremere har en partikel en masse, $m$. En partikel har en række, i opgaveteksten definerede funktioner, og vil som udgangspunkt tage sig selv som argument $p1$.
+
+\subsection*{b}
+Til at visualisere beholderen, og dens partikler, har jeg valgt at implementere et animationsplot. Dette vil gøre det muligt at følge en partikels færd gennem beholderen og man kan hurtigt få en fornemmelse om programmet kører rigtig, eller forkert.
+
+Et tilfældigt generet tilfælde vil fx se således ud, efter en række iterationer:
+
+\begin{figure}[h!]
+\centering
+   \includegraphics[width=0.4\textwidth]{an0}
+  \caption{Beholderen er vist som en grå cirkel, og partiklerne som en serie blå cirkler.}
+	\label{plot1}
+\end{figure}
+
+\subsection*{c}
+Som det ses i Figure.~\ref{plot1}, udregnes der i hvert animationsplot også en kræft, igen givet den i opgaveformulering udleverede formel, hvor variablen $F$ er blevet isoleret til:
+\\
+$F=0.5*A*D*m*N*{\vline v\vline}^2$ og $D!=0$
+~
+
+\subsection*{d}
+Til slut bedes der om en mulighed for at ændre på partiklernes hastighed, givet en bestemt temperatur. Jeg vælger at løse dette problem, ved at først isolere den nye gennemsnitstemperatur ud fra den givne formel, og herefter ændre samtlige partiklers hastighed til denne.
+
+Først og fremmest finder jeg den gennemsnitlige temperatur vha. følgende formel:
+\begin{lstlisting}%[Language=Python]
+
+ kb = 1.380658*10**-23
+ v = np.sqrt(2)*np.sqrt(kb)*np.sqrt(T) / np.sqrt(m)
+\end{lstlisting}
+Hvor $T$ er givet som argument, og $m$ er den globalt satte masse for en partikel.
+
+Herefter ændres samtlige partiklers hastighed til at være lig med den udregnede.
+
+\begin{lstlisting}
+        for p in self.listOfParticles:
+            # Downscale the direction vector
+            p.V = p.V.scale(1)
+            # Scale the direction vector to fit the temperature
+            p.V = p.V.scale(v)
+\end{lstlisting}
+
+\newpage
+\subsection*{d}
+Nu er al ønsket funktionalitet implementeret i koden, og ved kørsel fås følgende nye animationplot:
+
+\begin{figure}[h!]
+\centering
+   \includegraphics[width=0.4\textwidth]{an1}
+  \caption{Beholder med temperatur 300K.}
+	\label{plot2}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+   \includegraphics[width=0.4\textwidth]{an2}
+  \caption{Beholder med temperatur 373.15K\\
+  Læg mærke til hvorledes trykket er steget, i forhold til Figure.~\ref{plot2}.}
+	\label{plot3}
+\end{figure}
+
+Dette virker meget rigtigt, da trykket i beholderen stiger i takt med at temperaturen stiger. Ydremere vil animationen også vise større spring i partiklernes placering.
+I en tidligere version af koden, var min beholder ikke så stor i dens radius, og det påvirkede at koden fungerede med 300K, men ved 373.15K, blev partiklernes bevægelser så store, at nogle partikler blev låst fast i centrum af beholderen, da partiklerne altid ville flytte sig ud af beholderen, og derved aldrig synligt bevæge sig.
+
+\begin{flushright}
+EOF
+\end{flushright}
+\end{document}
