@@ -11,28 +11,46 @@ from ModelTw import *
 from ModelT import *
 
 if __name__ == "__main__":
-#    mt = ModelT()
-#    mt.readfile()
+    mt = ModelT()
+    mt.readfile()
 #    start = mt.getstart()
+
 #    print start,
 #    for i in range(10):
 #        start = mt.gennext(start)
 #        print start,
 
+#    m2 = ModelTw()
+#    m2.readfile()
 
-    m2 = ModelTw()
-    m2.readfile()
+ #   plt.figure()
+ #   plt.imshow(m2.matrix)
+#    plt.ylabel("".join(m2.k))
+  #  plt.show()
 
     plt.figure()
-#    plt.plot(mt.matrix)
-    plt.imshow(m2.matrix)
-    plt.xlabel("".join(m2.k))
+    plt.imshow(mt.matrix)
+#    plt.ylabel("".join(m2.k))
     plt.show()
 
-    for i in m2.matrix:
-        if float('%.3g' % sum(i)) != 1.000:
-            print "NEJ DA!"
 
+def testMatrix(m):
+    print "Testing the spread matrix:"
+    for i in m:
+        if float('%.3g' % sum(i)) != 1.000 and sum(i) != 0:
+            print "The spread is not as expected"
+#        else:
+#            print ".",
+
+
+print "Entering Test Section:"
+# TESTING
+"""
+Jeg forventer at alle rækker i min matrice enten summer til 1 i de tilfælde hvor symbolet findes i teksten,
+eller 0 i de tilfælde hvor symbolet ikke findes
+"""
+#testMatrix(m2.matrix)
+testMatrix(mt.matrix)
 
 
 #    m = np.zeros((61, 61))
