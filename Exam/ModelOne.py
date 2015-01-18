@@ -1,27 +1,25 @@
 #-*- coding: UTF-8 -*-
 from __future__ import division
+from SignsAllowed import signsAllowed
 import codecs
 import random
 
-signsAllowed = map(chr, range(97, 123)) # az
-signsAllowed += map(chr, range(65, 91)) # AZ
-signsAllowed += [u'æ', u'ø', u'å', u'Æ', u'Ø', u'Å']
-signsAllowed += [',', '.', ' ']
 
 
 class ModelOne():
-    dict = {}
-    signs = {}
-    total = 0
 
     def __init__(self):
+        self.dict = {}
+        self.signs = {}
+        self.total = 0
+
         readfile = codecs.open("ugeseddel_data.txt", "r", "utf-8")
         lines = readfile.readlines()
         for line in lines:
-            # Removes \n and other symbols for text formatting
-            words = line.strip()
             # Splits the lines into arrays of words, splitting at whitespaces
-            for sign in words:
+            for sign in line:
+                if sign == '\n':
+                    sign = ' '
                 # if sign is legal continue, else skip
                 if sign in signsAllowed:
                     # if sign already seen, increment number of times seen
@@ -47,7 +45,7 @@ class ModelOne():
                 p += self.signs[key] / self.total
             self.dict[p] = key
 
-    def generate_string(self, n):
+    def generatestring(self, n):
         st = ""
         for _ in range(n):
             i = random.random()
