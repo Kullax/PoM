@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 __author__ = 'Martin Simon Haugaard'
 """
 A simple implementation of a matrix, using only the build in python functions
@@ -136,7 +137,7 @@ if __name__ == "__main__":
     """
     First I initialize a few test matrix
     """
-    print "Initializing a few different matrixes of different sizes"
+    print "Initializing a few different matrix of different sizes"
     s0 = simplematrix()
     print "Simplematrix with no value or dimension given:\n", s0
     s1 = simplematrix(1, 2)

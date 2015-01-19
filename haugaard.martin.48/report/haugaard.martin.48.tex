@@ -55,7 +55,7 @@
 
 %%% The "real" document content comes below...
 
-\title{PoM Week 12}
+\title{PoM Week 12\\Genaflevering}
 \author{Martin Simon Haugaard\\cdl966}
 %\date{} % Activate to display a given date or no date (if empty),
          % otherwise the current date is printed 
@@ -92,10 +92,9 @@ Hvor vi ønsker at isolere $U_4$, hvilket giver følgende formel:\\
 $U_4 = \frac{c^2 k^2}{h^2}(U_1 - 2 U_2 + U_3) + 2 U_2 - U_5$\\
 \\
 Nu har vi så en formel til beregning af funktionen $u$ som funktion af $x$ til næste tidspunkt $t_{j+1}$.
-\newpage
 
 \subsubsection*{c}
-Her er så resultatet af min kørsel af programmet.\\
+Her er så resultatet af min kørsel af programmet.\\ Følgende eksempler er ved \textit{h} samt \textit{k} på $0.5$\\
 \begin{figure}[h!]
 \centering
    \includegraphics[width=0.5\textwidth]{bild1}
@@ -108,25 +107,34 @@ Her er så resultatet af min kørsel af programmet.\\
    \includegraphics[width=0.5\textwidth]{bild2}
   \caption{Bølgen er startet!}
 \end{figure}\\
-Og der gik bølgen i gang. Den ser lidt sjov ud, da der ikke et fikspunkt som man kan sige at personen der lavet bølgen står præcist et sted. Jeg vil derfor definere bølgen som enhver x-værdi der er større eller mindre end 0.001 på min grafs y-akse.\\
+Det er her tydeligt at se hvor bølgen befinder sig, da der kun er et udslag på grafen, netop der hvor bølgen befinder sig.
 \newpage
 Bevæger vi os et par iterationer frem ser bølgen således ud:
 \begin{figure}[h!]
 \centering
    \includegraphics[width=0.5\textwidth]{midvejs}
-  \caption{Bølgen er startet!}
+  \caption{Vi er her 233 iterationer inde, og det ligner vi er halvvejs.\\
+  Bemærk at der ikke blot er 250 sæder på stadium, da \textit{h} er sat til 0.5, er der to sæder pr værdi ved x-aksen.}
 \end{figure}
 \\
 Bølgen er godt halvvejs, og sådan bliver den ellers ved med at bevæge sig rundt. Når den når til kanten, fortsætter den ved x-værdi 0 og starter sådan set forfra.
 \\
-Det tog mig i alt 237 iterationer før min kode viste tegn på at bølgen havde nået kanten af stadium (x-værdi 250 større eller mindre end 0.001), altså en hel omgang rundt. Grunden til at det ikke tager 250 iterationer rent, er som sagt at bølgen i min model er flere felter bred.\\
-
 \begin{figure}[h!]
 \centering
    \includegraphics[width=0.5\textwidth]{slut}
   \caption{Bølgen har nået kanten af stadium, og vil begynde at wrappe rundt til starten.}
 \end{figure}
-Som en sjov lille bonus har jeg valgt at animere min bølge, og den kan ses ved at køre min kode (haugaard.martin.48.py) efter at alle de i rapporten viste plot er blevet lukket.\\
-Koden består af 250 frames, og det viser sig at det faktisk giver en nogenlunde smooth overgang når bølgen wrapper rundt.\\
-Vælger jeg at ændre på enten H eller K værdien i min kode, får jeg nogle besynderlige resultater, og jeg kan ikke påstå at det der bliver plottet er en bølge, og alle værdier bortset fra 1 og 1 resulterer i at alle tilskuere rejser sig, og i nogle tilfælde helt forsvinder i mine plots (værdierne kan ikke plottes som en graf).
+
+\subsection*{Hvor land tid tager det for bølgen af nå kanten af stadium?}
+Dette kommer an på hvor vores super-fan vælger at rejse sig. Hvis \textit{h} \& \textit{k} begge er initialiseret til 0.5
+vil vores super-fan initialiseres på placering 16 på stadium, og bølgen har i alt 500 sæder den skal igennem.\\
+Hvilket i alt tager 484 iterationer, hver af længden 0.5 tidsenhed. Altså tog det i alt \begin{math}484*0.5=\end{math} 242 tidsenheder, at bevæger bølgen igennem
+hele stadium.
+
+Skifter vi nu \textit{h} \& \textit{k} sat til 1.0, er vores super fan på sæde 8, og det tager 242 iterationer, af tidsenhed 1, at nå til kanten.
+Altså tager et stadions længde, minus fan's startposition, at nå til enden af stadium, såfremd \textit{k} og \textit{k} er ens, og i begge disse eksempler var det altså 242 tidsenheder.
+
+\subsection*{Hvad der der hvis \textit{h} eller \textit{k} ændres?}
+Hvis \textit{h} formindskes, tilføjes der flere sæder til stadium. Altså er der flere mennesker der skal rejse sig før at bølgen når rundt, og modsat kommer der færre sæder hvis \textit{h} stiger\\
+Hvis \textit{k} ændres til at være mindre, vil tidsintervallet imellem to iterationer blive mindre, altså vil bølgen tiltage i fart, da folk er blevet hurtigere til at rejse sig. Derimod hvis \textit{k} stiger, vil bølgen bevæge sig langosmmere.
 \end{document}

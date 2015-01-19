@@ -1,0 +1,152 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+\usepackage{enumerate}
+
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{PoM Week 16\\EXAM}
+\author{Martin Simon Haugaard\\cdl966}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed
+
+\begin{document}
+\maketitle
+
+\section*{}
+
+\subsection*{Designvalg}
+\subsubsection*{Model 1}
+Jeg har for Model 1 valgt at lave en simpel løsning vha. et \textit{dictionary}. Jeg starter med at køre hele teksten igennem for symboler. Hvor \textit{\\n} fortolkes som mellemrum, og altså også tæller med da mellemrum er et lovligt symbol.
+Når jeg støder på et lovligt symbol, checker jeg om det allerede er \textit{fundet}, hvorved jeg vil incremente dens værdi, ellers vil jeg register symbolet i mit dictionary som nøgle, og sætte dens værdi til 1.
+
+Når hele tekstfilen er blevet behandlet gemmer jeg, i et nyt dictionary, sandsynligheden for at et symbol er et tilfældigt sted i teksten.
+
+Nu er det så mulligt at lave en ny sekvens af symboler. Jeg får et tilfældigt symbol, via \textit{random.random()}, hvilket givet er tal mellem $0$ og $1$, og jeg kører nu mit dictionary igennem og tæller sandsynligheder sammen indtil jeg overskrider den tilfældigt valgte værdi. Når det sker ved jeg at nøglen for den samlede værdi, har den rette sandsynlighed for at blive udvalgt.
+
+\subsubsection*{Model 2 \& 3}
+Model 2 og 3 er meget ens med hinanden, eneste forskel er nogle variable navne, og måden der skelnes imellem symboler og hele ord.
+
+Når jeg nu kører teksten igennem i jagt på symboler eller ord, vil jeg ved det første match, gemme denne i en variabel, \textit{last}, og så lede efter det næste ord eller symbol. Når jeg så har to naboer, vil jeg i et dictionary, gemme en værdi, som angiver antal forekomster af disse ord i teksten. Altså bruger jeg begge ord som en nøgle, og incrementer deres værdi hvis de findes igen.\\
+
+Når jeg støder på et ord, checker jeg også om det er set før, hvis det ikke er, gemmer jeg det i endnu dictionary, $vocabulary$, som nøgle med værdi 1, og hvis det er set før, stiver værdien med en. Jeg skal dog lige huske, at det sidste ord jeg finder, ikke skal tælles med.
+
+Nu laver jeg så en $NxN$ matrice, hvor $N$ er længden af mit dictionary, $vocabulary$, eller alternativt længden af gyldige tegn i Model 2.
+
+Denne matrice udfylder jeg så med synligheder for at komme fra et ord/symbol til et andet. Denne matricer bliver altså til min overgangssandsynlighedstabel.
+
+Nu er der så kun et par hjælpefunktioner til at skabe de nye sekvenser, en som finder på en startværdi, meget lig metoden i Model 1. Funktionen til at finde den næste værdi er også meget ens, dog med matrice struktur, og endeligt er der funktionen til at skabe sekvensen.
+Det kan godt ske at man ender i en blindgyde når man skal finde den næste værdi. Fx hvis den originale tekst var $'abcd'$, og man nu er nået til $d$. I dette tilfælde vil min $gennext$ funktion give $None$, hvilket vil indikere til min sekvensskabende funktion, at den i stedet skal prøve at finde en ny startværdi, som den kan bruge. Jeg kunne godt have valgt at slutte, da der jo ikke er noget gyldigt valg at tage, men jeg foretrækker at fortsætte.
+\subsection*{Billeder}
+Jeg vil her vise de plots som min kode laver, først tre histogrammer, en for hver model.
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=1.0\textwidth]{modelone_hist}
+  \caption{Histogram ved uafhængige tegn, man ser især mange mellemrum og e'er, hvilket er at forvente. Histogrammet giver en god indikation om hvilke symboler man kan forvente når man starter en ny sekvens af tegn.}
+  \label{fig:histone}
+\end{figure}
+
+Her ses spredningen af tegn i kildekoden for Model 1. Det følger meget godt det man skulle forvente, da der er flere mellemrum end andet, samt det mest udbredte bogstav i det danske sprog, $e$ har den største værdi for andre tegn\footnote{http://www.sttmedia.com/characterfrequency-danish}.
+
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=1.0\textwidth]{modeltwo_hist}
+  \caption{Da det er den samme tekstfil, og de samme grænser for tegn som i Model 1, vil histogrammet for Model 2 være præcis det samme, hvilket som det ses, også er tilfældet.}
+  \label{fig:histtwo}
+\end{figure}
+
+Både Figur.~\ref{fig:histone} og Figur.~\ref{fig:histtwo} viser det samme histogram, dette skyldes at de bruger samme kilde til deres data, og selvom der i Model2 tages højde for parvise tegn, gør det ikke nogen forskel mht. spredningen af disse i kildekoden. 
+
+\newpage 
+
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=1.0\textwidth]{modelthree_hist}
+  \caption{Histogram ved afhængige ord, det ses her hvordan forekomsterne af ord skifter fra meget høje til meget lave værdier. Bemærk dog at alle værdier er relativt lave ($>0.035$), så når man skal finde et start punkt er det så godt som umuligt at forudsige hvilket ord der bliver valgt. Selv hvis den har markant større chance en de andre.}
+  \label{fig:histthree}
+\end{figure}
+
+Her er histogrammet for Model 3, og som det fremgår er der en del flere variable i denne model, i forhold til i Model 1 \& 2. Dette medvirker at hvor chancen for et symbol i Model 1 og Model 2 var omkring de $[00.00 - 0.15[$, er det et helt andet skala vi er på nu, da den højeste værdi knap nok kommer op på $0.03$. Som resultat virker det meget mere tilfældigt med hvilket ord der vælges som start ord.
+
+\newpage 
+
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=1.0\textwidth]{modeltwo}
+  \caption{Her ses min overgangssandsynlighedstabel for Model 2, bemærk at den skal læses med y-aksen som start punkter, og x-aksen som slut punkter. Blå betyder lav sandsynlighed, og rød høj, ligesom i eksemplet i eksamensteksten.}
+  \label{fig:modeltwo}
+\end{figure}
+
+Ved at kigge på Figur.~\ref{fig:modeltwo}, ses det tydeligt at der er et meget blåt område, ved alle blokbogstaver ved x-aksen. Dette giver fin mening da der ikke er mange ord i den udleverede tekst, som er skrevet udelukkende i blokbogstaver, men derimod bruges blokbogstaver ofte i starten af et ord, eller ved formler og variable.\\
+Det ses også at \textit{,} ret så ofte bliver efterfulgt at et mellemrum, hvilket også er meget logisk.
+\newpage
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=1.0\textwidth]{modelthree}
+  \caption{Overgangssandsynlighedstabel for Model 3, det er meget blåt, dette skyldes blandt andet at der er meget store forskelle på de højeste og de laveste værdier i tabellen (Se Figur.~\ref{fig:histthree}), og dels at der er en del flere værdier, så ethvert udslag bliver meget småt på plottet.}
+  \label{fig:modelthree}
+\end{figure}
+
+Her er så overgangssandsynlighedstabel, den virker meget 'tom', men det skyldes at der er mange flere ord end der ere unikke tegn, hvilket resulterer i den meget stor tabel, hvor der ikke er meget plads til hvert plot. Det er dog muligt at skimte enkelte røde og gule prikker. Bemærk, at de tydelige udslag, er der hvor et ord har meget få matches med andre, således at der hvor der er et match, bliver det fremhævet. Hvis et ord derimod er brugt ofte, bliver dens udslag spredt meget tyndt, og det virker blåt.
+
+\newpage
+
+\subsection*{Tests}
+Ved kørsel af min kode, $martin.haugaard.py$, vil man efter at have set de ovenfor viste plots, komme til en test fase. Her har jeg en række små tests der gerne skulle vise om min kode bliver kørt rigtigt, og er til at stole på.
+\\
+Den for mig vigtigste test er at undersøge om i Model 2 \& 3, at for hvert ord eller symbol i overgangssandsynlighedstabell, om summen af de mulige valg der kan tages enten er $1.0$ eller $0.0$, forstået på den måde at man skal have enten alle de gyldige valgmuligheder at vælge imellem i overgangssandsynlighedstabel, eller ingen. Hvis summen af valg er $0.0$ betyder det at man er nået til en blindgyde, og min kode vil starte et nyt sted, og hvis summen er $1.0$ betyder det at alle mulige valg er repræsenteret. Hvis summen ikke er en af disse to, er der en fejl i min kode, og jeg kan ikke garantere at det næste ord eller tegn har den rigtige sandsynlighed for at blive valgt. For at undgå afrundingsfejl, har jeg valgt kun at checke $1.0$ med tre betydende decimaler.
+
+Efter disse tests læser jeg en kort fil ind, med en kort sekvens: $'a c d e f g a d s'$. Først bruger jeg denne korte sekvens til, via Model 3, at lave en ny sekvens af længden 10, hvorefter jeg bekræfter at længden er 10.
+
+Herefter tester jeg 100 gange, om hvad det næste ord efter $'a'$ vil være. Kigger man på sekvensen er der to muligheder, nemlig  $'c'$ eller $'d'$. Og ved mindre der bliver skrevet en fejlmeldelse i terminalen, er min kode i stand til at forudsige dette, hvilket bekræfter $gennext$'s funktionalitet. 
+\end{document}
